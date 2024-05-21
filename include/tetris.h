@@ -104,7 +104,7 @@ struct piece
 
     /**
      * Index de la première position selon la rotation
-    */
+     */
     int premiere_pos[4];
 
     /**
@@ -159,7 +159,6 @@ void spawn_piece(struct piece piece);
  * Met à jour les listes de pièces et en choisit une nouvelle au hasard
  */
 void nouvelle_piece();
-
 
 /**
  * Détermine si une position est dans la pièce active
@@ -223,14 +222,13 @@ void deplacer(int direction);
 
 /**
  * Efface le positions actives du tableau
-*/
-void effacer_positions_actif() ;
+ */
+void effacer_positions_actif();
 
 /**
  * Peind les positions actives
-*/
+ */
 void peindre_actif();
-
 
 /**
  * Détermine si une rotation est possible

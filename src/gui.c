@@ -24,10 +24,7 @@ static SDL_Surface *images_ombres[9];
 static SDL_Texture *ombres[9];
 
 /**
- * @brief An enumeration to represent all symbols.
- *
- * It can be used to ease the readibility of your code.
- *
+ * Enumération des couleurs pour simplifier le code
  */
 enum object
 {
@@ -43,15 +40,13 @@ enum object
 };
 
 /**
- * @brief The set of `char` values used to represent maps.
+ * @brief The set of `char` values used to represent colors.
  *
  */
 static char symbols[] = {'N', 'B', 'V', 'C', 'O', 'P', 'R', '#', 'J'};
 
 /**
- * @brief The locations of the bitmap images to use.
- *
- * The files must be given in the same order as the symbols.
+ * Les fichiers bitmaps à utiliser pour les blocs, dans le même ordre que les couleurs
  */
 static char *image_filename[] = {
     "bitmap/black.bmp",
@@ -64,6 +59,9 @@ static char *image_filename[] = {
     "bitmap/wall.bmp",
     "bitmap/yellow.bmp"};
 
+/**
+ * Les fichiers bitmaps correspondant aux couleurs des ombres (plus sombres)
+ */
 static char *ombre_filename[] = {
     "bitmap/o_black.bmp",
     "bitmap/o_blue.bmp",
@@ -75,6 +73,9 @@ static char *ombre_filename[] = {
     "bitmap/o_wall.bmp",
     "bitmap/o_yellow.bmp"};
 
+/**
+ * Des fichiers correspondant aux caractères (NEXT et HOLD)
+ */
 static char *char_filename[] = {
     "bitmap/N.bmp",
     "bitmap/E.bmp",
@@ -86,7 +87,7 @@ static char *char_filename[] = {
     "bitmap/D.bmp",
 };
 
-void GUI_close()
+void gui_close()
 {
     for (int obj = NOIR; obj <= JAUNE; obj++)
     {
@@ -101,25 +102,26 @@ void GUI_close()
     window = NULL;
 
     SDL_Quit();
-
-    // exit(EXIT_SUCCESS);
 }
 
-void GUI_init()
+void gui_init()
 {
+    // Initialisation du module SDL
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
         fprintf(stderr, "Error in SDL_Init: %s\n", SDL_GetError());
         exit(-1);
     }
 
+    // Création de la fenêtre
     window = SDL_CreateWindow("Tetris",
                               SDL_WINDOWPOS_UNDEFINED,
                               SDL_WINDOWPOS_UNDEFINED,
                               (LARGEUR + 10) * ICON_SIZE,
-                              (HAUTEUR+2) * ICON_SIZE,
+                              (HAUTEUR + 2) * ICON_SIZE,
                               0);
 
+    // Si la fenêtre n'a pas été crée
     if (window == NULL)
     {
         fprintf(stderr, "Error in SDL_CreateWindow: %s\n", SDL_GetError());
@@ -127,8 +129,10 @@ void GUI_init()
         exit(-1);
     }
 
+    // Création du contexte de la fenêtre
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
 
+    // Si la création du contexte n'a pas fonctionné
     if (renderer == NULL)
     {
         fprintf(stderr, "Error in SDL_CreateRenderer: %s\n", SDL_GetError());
@@ -136,23 +140,29 @@ void GUI_init()
         exit(-1);
     }
 
+    // Création des événements d'appui de touche et pour quitter la fenêtre
     SDL_EventState(SDL_KEYDOWN, SDL_ENABLE);
     SDL_EventState(SDL_QUIT, SDL_ENABLE);
 
+    // Chargement des couleurs principales
     for (int obj = NOIR; obj <= JAUNE; obj++)
     {
+        // On associe chaque image à une couleur
         images[obj] = SDL_LoadBMP(image_filename[obj]);
 
+        // Si il manque un fichier image
         if (!images[obj])
         {
             fprintf(stderr, "Missing image %s\n", image_filename[obj]);
             exit(1);
         }
 
+        // Création de texture
         textures[obj] = SDL_CreateTextureFromSurface(renderer, images[obj]);
         SDL_FreeSurface(images[obj]);
     }
 
+    // Chargement des lettres
     for (int k = 0; k < 8; k++)
     {
         images_lettres[k] = SDL_LoadBMP(char_filename[k]);
@@ -167,6 +177,7 @@ void GUI_init()
         SDL_FreeSurface(images_lettres[k]);
     }
 
+    // Chargement des ombres
     for (int k = 0; k < 9; k++)
     {
         images_ombres[k] = SDL_LoadBMP(ombre_filename[k]);
@@ -182,134 +193,29 @@ void GUI_init()
     }
 }
 
-void GUI_spawn_next(struct piece piece)
+void afficher_pieces_cote(struct piece piece, int laquelle)
 {
-
+    // Affichage des murs atour des pièces
     for (int x = LARGEUR + 4; x < LARGEUR + 8; x++)
     {
         SDL_Rect area = {
             x * ICON_SIZE,
-            1 * ICON_SIZE,
+            (1 + laquelle * 11) * ICON_SIZE,
             ICON_SIZE,
             ICON_SIZE};
-        SDL_RenderCopy(renderer, lettres[x - LARGEUR - 4], NULL, &area);
+        SDL_RenderCopy(renderer, lettres[x - LARGEUR - 4 * (1 - laquelle)], NULL, &area);
     }
 
-    for (int col = LARGEUR + 2; col <= LARGEUR + 9; col += 7)
-    {
-        for (int y = 14; y < 21; y++)
-        {
-            SDL_Rect area = {
-                col * ICON_SIZE,
-                (HAUTEUR + 2 - y) * ICON_SIZE,
-                ICON_SIZE,
-                ICON_SIZE};
-            SDL_RenderCopy(renderer, textures[MUR], NULL, &area);
-        }
-    }
+    // Si on affiche la pièce suivante, il faut décaler l'affichage de 11 lignes
+    int ajout_lignes = 11 * (1 - laquelle);
 
-    for (int row = 14; row <= 20; row += 6)
+    // Ajout des murs verticaux
+    for (int x = LARGEUR + 2; x <= LARGEUR + 9; x += 7)
     {
-        for (int x = LARGEUR + 2; x < LARGEUR + 10; x++)
+        for (int y = 3 + ajout_lignes; y <= 9 + ajout_lignes; y++)
         {
             SDL_Rect area = {
                 x * ICON_SIZE,
-                (22 - row) * ICON_SIZE,
-                ICON_SIZE,
-                ICON_SIZE};
-            SDL_RenderCopy(renderer, textures[MUR], NULL, &area);
-        }
-    }
-
-    if (piece.taille == 2)
-    {
-        for (int row = 16; row < 18; row++)
-        {
-            for (int col = LARGEUR + 5; col < LARGEUR + 8; col++)
-            {
-                SDL_Rect area = {
-                    col * ICON_SIZE,
-                    (22 - row) * ICON_SIZE,
-                    ICON_SIZE,
-                    ICON_SIZE};
-
-                for (int obj = NOIR; obj <= JAUNE; obj++)
-                {
-                    if (piece.positions[0][col - LARGEUR - 5][row - 16] == symbols[obj])
-                    {
-                        SDL_RenderCopy(renderer, textures[obj], NULL, &area);
-                    }
-                }
-            }
-        }
-    }
-
-    if (piece.taille == 3)
-    {
-        for (int row = 16; row < 19; row++)
-        {
-            for (int col = LARGEUR + 5; col < LARGEUR + 8; col++)
-            {
-                SDL_Rect area = {
-                    col * ICON_SIZE,
-                    (22 - row) * ICON_SIZE,
-                    ICON_SIZE,
-                    ICON_SIZE};
-
-                for (int obj = NOIR; obj <= JAUNE; obj++)
-                {
-                    if ((piece.positions[0][col - LARGEUR - 5][row - 16] == symbols[obj]) && (piece.positions[0][col - LARGEUR - 5][row - 16] != 'N'))
-                    {
-                        SDL_RenderCopy(renderer, textures[obj], NULL, &area);
-                    }
-                }
-            }
-        }
-    }
-
-    if (piece.taille == 4)
-    {
-        for (int row = 16; row < 19; row++)
-        {
-            for (int col = LARGEUR + 4; col < LARGEUR + 8; col++)
-            {
-                SDL_Rect area = {
-                    col * ICON_SIZE,
-                    (23 - row) * ICON_SIZE,
-                    ICON_SIZE,
-                    ICON_SIZE};
-
-                for (int obj = NOIR; obj <= JAUNE; obj++)
-                {
-                    if ((piece.positions[1][col - LARGEUR - 4][row - 16] == symbols[obj]) && (piece.positions[1][col - LARGEUR - 4][row - 16] != 'N'))
-                    {
-                        SDL_RenderCopy(renderer, textures[obj], NULL, &area);
-                    }
-                }
-            }
-        }
-    }
-}
-
-void GUI_spawn_hold(struct piece piece)
-{
-
-    for (int x = LARGEUR + 4; x < LARGEUR + 8; x++)
-    {
-        SDL_Rect area = {
-            x * ICON_SIZE,
-            12 * ICON_SIZE,
-            ICON_SIZE,
-            ICON_SIZE};
-        SDL_RenderCopy(renderer, lettres[x - LARGEUR], NULL, &area);
-    }
-
-    for (int col = LARGEUR + 2; col <= LARGEUR + 9; col += 7)
-    {
-        for (int y = 3; y < 10; y++)
-        {
-            SDL_Rect area = {
-                col * ICON_SIZE,
                 (22 - y) * ICON_SIZE,
                 ICON_SIZE,
                 ICON_SIZE};
@@ -317,90 +223,53 @@ void GUI_spawn_hold(struct piece piece)
         }
     }
 
-    for (int row = 3; row <= 9; row += 6)
+    // Ajout des murs horizontaux
+    for (int y = 3 + ajout_lignes; y <= 9 + ajout_lignes; y += 6)
     {
         for (int x = LARGEUR + 2; x < LARGEUR + 10; x++)
         {
             SDL_Rect area = {
                 x * ICON_SIZE,
-                (22 - row) * ICON_SIZE,
+                (22 - y) * ICON_SIZE,
                 ICON_SIZE,
                 ICON_SIZE};
             SDL_RenderCopy(renderer, textures[MUR], NULL, &area);
         }
     }
 
-    if (piece.taille == 2)
-    {
-        for (int row = 5; row < 7; row++)
-        {
-            for (int col = LARGEUR + 5; col < LARGEUR + 8; col++)
-            {
-                SDL_Rect area = {
-                    col * ICON_SIZE,
-                    (22 - row) * ICON_SIZE,
-                    ICON_SIZE,
-                    ICON_SIZE};
+    // Détermination de la couleur de la surface
+    int couleur = 0;
 
-                for (int obj = NOIR; obj <= JAUNE; obj++)
-                {
-                    if ((piece.positions[0][col - LARGEUR - 5][row - 5] == symbols[obj]) && (piece.positions[0][col - LARGEUR - 5][row - 5] != 'N'))
-                    {
-                        SDL_RenderCopy(renderer, textures[obj], NULL, &area);
-                    }
-                }
-            }
+    for (int coul = NOIR; coul <= JAUNE; coul++)
+    {
+        if (piece.couleur == symbols[coul])
+        {
+            couleur = coul;
+            break;
         }
     }
 
-    if (piece.taille == 3)
+    // Affichage de la pièce
+    for (int row = 0; row < piece.taille; row++)
     {
-        for (int row = 5; row < 8; row++)
+        for (int col = 0; col < piece.taille; col++)
         {
-            for (int col = LARGEUR + 5; col < LARGEUR + 8; col++)
+            // On positionne l'aire à droite du plateau
+            SDL_Rect area = {
+                (col + 5 + LARGEUR - (piece.taille == 4)) * ICON_SIZE,
+                (17 + (piece.taille == 4) - row - ajout_lignes) * ICON_SIZE,
+                ICON_SIZE,
+                ICON_SIZE};
+
+            if (piece.positions[(piece.taille == 4)][col][row] == piece.couleur)
             {
-                SDL_Rect area = {
-                    col * ICON_SIZE,
-                    (22 - row) * ICON_SIZE,
-                    ICON_SIZE,
-                    ICON_SIZE};
-
-                for (int obj = NOIR; obj <= JAUNE; obj++)
-                {
-                    if ((piece.positions[0][col - LARGEUR - 5][row - 5] == symbols[obj]) && (piece.positions[0][col - LARGEUR - 5][row - 5] != 'N'))
-                    {
-                        SDL_RenderCopy(renderer, textures[obj], NULL, &area);
-                    }
-                }
-            }
-        }
-    }
-
-    if (piece.taille == 4)
-    {
-        for (int row = 5; row < 8; row++)
-        {
-            for (int col = LARGEUR + 4; col < LARGEUR + 8; col++)
-            {
-                SDL_Rect area = {
-                    col * ICON_SIZE,
-                    (23 - row) * ICON_SIZE,
-                    ICON_SIZE,
-                    ICON_SIZE};
-
-                for (int obj = NOIR; obj <= JAUNE; obj++)
-                {
-                    if ((piece.positions[1][col - LARGEUR - 4][row - 5] == symbols[obj]) && (piece.positions[1][col - LARGEUR - 4][row - 5] != 'N'))
-                    {
-                        SDL_RenderCopy(renderer, textures[obj], NULL, &area);
-                    }
-                }
+                SDL_RenderCopy(renderer, textures[couleur], NULL, &area);
             }
         }
     }
 }
 
-void GUI_spawn_ombre(char couleur)
+void afficher_ombre(char couleur)
 {
     int objet;
 
@@ -424,7 +293,7 @@ void GUI_spawn_ombre(char couleur)
     }
 }
 
-void GUI_show()
+void show()
 {
     char couleur = pieces[indice_piece]->couleur;
     struct piece hold = *pieces[indice_hold];
@@ -452,14 +321,14 @@ void GUI_show()
         }
     }
 
-    GUI_spawn_next(next);
-    GUI_spawn_hold(hold);
-    GUI_spawn_ombre(couleur);
+    afficher_pieces_cote(next, NEXT);
+    afficher_pieces_cote(hold, HOLD);
+    afficher_ombre(couleur);
 
     SDL_RenderPresent(renderer);
 }
 
-int GUI_get_key()
+int get_key()
 {
     SDL_Event event;
 
@@ -469,7 +338,7 @@ int GUI_get_key()
 
         if (event.type == SDL_QUIT)
         {
-            GUI_close();
+            gui_close();
             return -1;
         }
 
@@ -488,7 +357,7 @@ int *get_evenement()
 
         if (event.type == SDL_QUIT)
         {
-            GUI_close();
+            gui_close();
             int *array = malloc(sizeof(int));
             array[0] = -1;
             return array;
@@ -513,7 +382,7 @@ int *get_evenement()
     }
 }
 
-void GUI_wait_click()
+void wait_click()
 {
     SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_ENABLE);
     SDL_Event event;
@@ -526,7 +395,7 @@ void GUI_wait_click()
     SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_IGNORE);
 }
 
-void GUI_pause(int time)
+void pause(int time)
 {
     SDL_Delay((Uint32)time);
 }

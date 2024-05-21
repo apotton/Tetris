@@ -90,7 +90,7 @@ void print_board()
 
 bool spawn_possible(struct piece piece)
 {
-    int hauteur = HAUTEUR - 3 - piece.bas[0];
+    int hauteur = HAUTEUR - 2 - piece.bas[0];
 
     for (int x = 0; x < piece.taille; x++)
     {

@@ -192,7 +192,7 @@ int eval()
  * @param tableau_a_copier Le tableau à copier
  * @param tableau_destination Le tableau vers lequel copier
  */
-void tableau_vers_tableau(char tableau_a_copier[LARGEUR+2][HAUTEUR+2], char tableau_destination[LARGEUR+2][HAUTEUR+2])
+void tableau_vers_tableau(char tableau_a_copier[LARGEUR + 2][HAUTEUR + 2], char tableau_destination[LARGEUR + 2][HAUTEUR + 2])
 {
     for (int x = 1; x <= LARGEUR; x++)
     {
@@ -215,7 +215,7 @@ int main(void)
 {
     // Initialisations
     init();
-    GUI_init();
+    gui_init();
 
     // Détermination des premières pièces
     indice_piece = rand() % 7;
@@ -300,13 +300,13 @@ int main(void)
 
         nombre_coups++;
 
-        GUI_show();
+        show();
 
         // Commenter ou décommenter cette ligne pour voir coup par coup
-        // key = GUI_get_key();
+        // key = get_key();
     }
 
-    GUI_close();
+    gui_close();
 
     printf("Nombre de coups joués: %d\n", nombre_coups);
 

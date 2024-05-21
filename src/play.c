@@ -2,10 +2,10 @@
 #include "tetris.h"
 
 int main(void)
-{   
+{
     // Initialisations
     init();
-    GUI_init();
+    gui_init();
     nouvelle_piece();
 
     bool termine = false;
@@ -14,9 +14,9 @@ int main(void)
     {
         actualiser_ombre();
 
-        GUI_show();
+        show();
 
-        int key = GUI_get_key();
+        int key = get_key();
 
         switch (key)
         {
@@ -86,7 +86,7 @@ int main(void)
         }
     }
 
-    GUI_close();
+    gui_close();
 
     printf("Score final: %d\n", score);
 

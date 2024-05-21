@@ -1,71 +1,70 @@
-/**
- * @file gui.h
- * 
- * @brief Fonctions d'affichage
- * 
- * @author c.garion
-*/
 #include "SDL2/SDL.h"
 #include "tetris.h"
 
-#ifndef GUI_H
-#define GUI_H
+#ifndef H
+#define H
 
+#define HOLD 1
+#define NEXT 0
 
 /**
- * @brief Close the GUI window.
+ * Ferme une fenêtre
  *
  */
-void GUI_close();
-
-
+void gui_close();
 
 /**
- * @brief Initialize the GUI windows.
- *
- * The width and height of the window are specified in number of cells.
- * `ICON_SIZE` is a constant determining the size in pixel of an icon.
- *
- * @param title  a string representing the title of the window
- *
- * @param width  the width of the window (number of cells)
- *
- * @param height the height of the window (number of cells)
+ * Initialise une fenêtre
  */
-void GUI_init();
+void gui_init();
 
 /**
- * @brief Display a Tetris level.
+ * Affiche les pièces sur le côté du plateau
+ *
+ * @param piece La pièce à afficher
+ *
+ * @param laquelle HOLD ou NEXT
  */
-void GUI_show() ;
+void afficher_pieces_cote(struct piece piece, int laquelle);
 
 /**
- * @brief Get the key pressed by the user
+ * Affiche l'ombre de la pièce actuelle
+ *
+ * @param couleur La couleur de la pièce
+ */
+void afficher_ombre(char couleur);
+
+/**
+ * Affiche un plateau Tetris
+ */
+void show();
+
+/**
+ * Get the key pressed by the user
  *
  * @return a char representing the key pressed by the user
  */
-int GUI_get_key();
+int get_key();
 
 /**
- * @brief Wait for a mouse click on the window
+ * Wait for a mouse click on the window
  *
  */
-void GUI_wait_click();
+void wait_click();
 
 /**
- * @brief Fonction qui attend un évènement (un clic ou une touche appuyée)
- * 
+ * Fonction qui attend un évènement (un clic ou une touche appuyée)
+ *
  * @return Un array contenant la position du clic ou la touche appuyée
-*/
-int * get_evenement() ;
+ */
+int *get_evenement();
 
 /**
- * @brief Wait for time ms.
+ * Wait for time ms.
  *
  * @param time the time to wait (in ms)
  *
  */
-void GUI_pause(int time);
-
+void pause(int time);
 
 #endif
