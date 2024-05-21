@@ -1,0 +1,15 @@
+{
+    "C_Cpp.errorSquiggles": "disabled",
+    "files.associations": {
+        "gui.h": "c",
+        "sdl.h": "c",
+        "stdlib.h": "c",
+        "stdbool.h": "c",
+        "tetris.h": "c",
+        "stdio.h": "c"
+    },
+    "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
+        "clang-diagnostic-error",
+        "clang-diagnostic-error"
+    ]
+}
