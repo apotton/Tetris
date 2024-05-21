@@ -1,11 +1,3 @@
-/**
- * @file tetric.c
- *
- * @brief Fichier qui définit le fonctionnement d'une partie de Tetris
- *
- * @author Alexandre Potton
- */
-
 #include "tetris.h"
 
 char plateau[LARGEUR + 2][HAUTEUR + 2];
@@ -118,7 +110,6 @@ bool spawn_possible(struct piece piece)
     return true;
 }
 
-
 void spawn_piece(struct piece piece)
 {
 
@@ -146,7 +137,7 @@ void spawn_piece(struct piece piece)
 }
 
 void nouvelle_piece()
-{   
+{
     struct piece piece = *pieces[actuelle_prochaine[0]];
 
     // On fixe la rotation à son état de base
@@ -400,7 +391,7 @@ void tourner(int sens)
 
         // On efface la pièce
         effacer_positions_actif();
-        
+
         // On la replace à l'endroit où elle était
         spawn_piece(*pieces[indice_piece]);
     }
@@ -444,7 +435,7 @@ void eliminer_lignes()
         if (ligne_complete)
         {
             nombre_lignes++;
-            
+
             // On supprime la ligne
             descendre_lignes(ligne);
 
