@@ -118,7 +118,7 @@ struct piece
     char positions[4][4][4];
 };
 
-extern struct piece o, i, l, s, z, j, t, rien;
+const extern struct piece o, i, l, s, z, j, t, rien;
 
 /**
  * Indice de la pièce dans le hold
@@ -128,7 +128,7 @@ extern int indice_hold;
 /**
  * Tableau des pièces
  */
-extern struct piece *pieces[8];
+const extern struct piece *pieces[8];
 
 /**
  * Initialisation du plateau

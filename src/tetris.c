@@ -9,7 +9,7 @@ int indice_piece;
 int actuelle_prochaine[2];
 int score;
 
-struct piece *pieces[8] = {&o, &i, &l, &s, &z, &j, &t, &rien};
+const struct piece *pieces[8] = {&o, &i, &l, &s, &z, &j, &t, &rien};
 int indice_hold = 7; // Pièce vide pour commencer
 
 void init()

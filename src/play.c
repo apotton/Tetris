@@ -25,7 +25,6 @@ int main(void)
             break;
 
         case SDLK_LEFT:
-
             deplacer(GAUCHE);
             break;
 

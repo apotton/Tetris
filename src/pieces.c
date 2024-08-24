@@ -3,7 +3,7 @@
 /**
  * Pièce carrée
  */
-struct piece o = {
+const struct piece o = {
     .taille = 2,
     .couleur = 'J',
     .bas = {0},
@@ -26,7 +26,7 @@ struct piece o = {
 /**
  * Barre
  */
-struct piece i = {
+const struct piece i = {
     .taille = 4,
     .bas = {2, 0, 1, 0},
     .offset = LARGEUR / 2 - 2,
@@ -57,7 +57,7 @@ struct piece i = {
 /**
  * Pièce L
  */
-struct piece l = {
+const struct piece l = {
     .taille = 3,
     .bas = {1, 0, 0, 0},
     .couleur = 'O',
@@ -84,7 +84,7 @@ struct piece l = {
 /**
  * Pièce S
  */
-struct piece s = {
+const struct piece s = {
     .taille = 3,
     .bas = {1, 0, 0, 0},
     .nb_rotations = 2,
@@ -111,7 +111,7 @@ struct piece s = {
 /**
  * Pièce Z
  */
-struct piece z = {
+const struct piece z = {
     .taille = 3,
     .bas = {1, 0, 0, 0},
     .offset = LARGEUR / 2 - 2,
@@ -138,7 +138,7 @@ struct piece z = {
 /**
  * Pièce J
  */
-struct piece j = {
+const struct piece j = {
     .taille = 3,
     .bas = {1, 0, 0, 0},
     .offset = LARGEUR / 2 - 2,
@@ -165,7 +165,7 @@ struct piece j = {
 /**
  * Pièce T
  */
-struct piece t = {
+const struct piece t = {
     .taille = 3,
     .bas = {1, 0, 0, 0},
     .offset = LARGEUR / 2 - 2,
@@ -192,7 +192,7 @@ struct piece t = {
 /**
  * Pièce vide
  */
-struct piece rien = {
+const struct piece rien = {
     .taille = 2,
     .bas = {0},
     .largeur = {2, 2, 2, 2},
